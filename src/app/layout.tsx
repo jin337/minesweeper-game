@@ -1,22 +1,21 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "@/styles/globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const font = Inter({
+  weight: '400',
+  subsets: ["latin"]
+});
 
 export const metadata: Metadata = {
   title: "minesweeper-game",
   description: "A classic puzzle of logic and strategy.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`relative ${font.className}`}>{children}</body>
     </html>
   );
 }
