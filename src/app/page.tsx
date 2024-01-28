@@ -5,7 +5,7 @@ const Home = () => {
   const [box, setBox] = useState(9)
 
   const gridItems = Array.from({ length: box * box }, (_, index) => (
-    <div key={index} className="w-10 h-10 shadow-lg rounded transform transition duration-300 ease-in-out hover:scale-110 bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700" />
+    <div key={index} className="size-6 xs:size-10 shadow-lg rounded transform transition duration-300 ease-in-out hover:scale-110 bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700" />
   ));
 
   return (
@@ -19,7 +19,7 @@ const Home = () => {
           </div>
         </div> */}
         <div className="mt-10">
-          <div className="grid grid-cols-9 gap-1 w-[400px] m-auto">
+          <div className="grid grid-cols-9 gap-1 w-[255px] xs:w-[400px] m-auto">
             {gridItems}
           </div>
         </div>
