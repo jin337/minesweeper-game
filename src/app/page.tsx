@@ -5,6 +5,7 @@ import Box from '@/components/Box';
 
 const Home = () => {
   const [box, setBox] = useState(9)
+  const [bomb, setBomb] = useState(9)
   const { formattedTime, startTimer, refreshTimer } = useTimer();
   const [resetKey, setResetKey] = useState(0);
 
@@ -20,6 +21,7 @@ const Home = () => {
     };
   }, []);
 
+  // 重新开始
   const handleRestart = () => {
     refreshTimer();
     setResetKey(prevKey => prevKey + 1);

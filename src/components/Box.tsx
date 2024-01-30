@@ -8,6 +8,7 @@ const Box = ({ index, startTimer, boxState, resetKey }: { index: number; startTi
   const [clickCount, setClickCount] = useState(0);
   const [leftClicked, setLeftClicked] = useState(false);
 
+  // 初始化
   useEffect(() => {
     setContent(null);
     setBgClass('bg-blue-500');
@@ -15,6 +16,7 @@ const Box = ({ index, startTimer, boxState, resetKey }: { index: number; startTi
     setLeftClicked(false);
   }, [resetKey]);
 
+  // 状态更新
   const updateState = useCallback((newCount: number) => {
     switch (newCount) {
       case 1:
@@ -32,6 +34,7 @@ const Box = ({ index, startTimer, boxState, resetKey }: { index: number; startTi
     }
   }, []);
 
+  // 左键操作
   const handleLeftClick = () => {
     startTimer();
     setLeftClicked(true);
@@ -50,6 +53,7 @@ const Box = ({ index, startTimer, boxState, resetKey }: { index: number; startTi
     }
   };
 
+  // 右键操作
   const handleRightClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.preventDefault();
     if (leftClicked) return;
