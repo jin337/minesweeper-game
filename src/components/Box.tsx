@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, ReactNode } from "react";
+import { useState, useEffect } from "react";
 
 interface BoxProps {
   items: number[][] //0-无炸弹，1有炸弹
@@ -13,7 +13,8 @@ interface boxArrProps {
   left?: number
   right?: number
   bgClass?: string
-  content?: ReactNode | null
+  contentClass?: string
+  content?: string | number
 }
 
 // 判断当前炸弹数量
@@ -74,8 +75,9 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
       }
       list[r][c].left = 1;
       const bombsAround = countBombsAround(old, r, c);
-      list[r][c].content = bombsAround ? <span className="text-2xl text-blue-500 font-bold">{bombsAround}</span> : null;
       list[r][c].bgClass = 'from-neutral-100 to-neutral-200 hover:from-neutral-300 hover:to-neutral-400';
+      list[r][c].contentClass = 'text-2xl text-blue-500 font-bold';
+      list[r][c].content = bombsAround ? bombsAround : null;
       if (bombsAround === 0) {
         spread(r - 1, c); // 上
         spread(r + 1, c); // 下
@@ -117,11 +119,11 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
     let count = item.right
     if (count == 0) {
       list[pindex][index].right = 1
-      list[pindex][index].content = <span className="text-2xl">🚩</span>
+      list[pindex][index].content = '🚩'
       list[pindex][index].bgClass = 'from-yellow-100 to-yellow-200 hover:from-yellow-300 hover:to-yellow-400'
     } else if (count == 1) {
       list[pindex][index].right = 2
-      list[pindex][index].content = <span className="text-2xl">❓</span>
+      list[pindex][index].content = "❓"
       list[pindex][index].bgClass = 'from-green-100 to-green-200 hover:from-green-300 hover:to-green-400'
     } else {
       list[pindex][index].right = 0
@@ -138,7 +140,8 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
         if (e.type === 1) {
           return {
             ...e,
-            content: <span className="text-3xl animate-explode">💣</span>,
+            content: '💣',
+            contentClass: 'text-3xl animate-explode',
             bgClass: 'bg-red-100'
           };
         }
@@ -154,7 +157,8 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
           if (e.type === 1) {
             return {
               ...e,
-              content: <span className="text-3xl">💥</span>,
+              content: '💥',
+              contentClass: 'text-3xl',
               bgClass: 'bg-neutral-800'
             };
           }
@@ -177,7 +181,9 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
               key={index}
               onClick={(e) => handleLeftClick(e, item, rowIndex, index)}
               onContextMenu={(e) => handleRightClick(e, item, rowIndex, index)}
-              className={`size-8 xs:size-10 m-1 shadow shadow-blue-600/50 rounded transform transition duration-300 ease-in-out flex justify-center items-center hover:scale-110 bg-gradient-to-br ${item.bgClass}`}>{item?.content || null}</div>
+              className={`size-8 xs:size-10 m-1 shadow shadow-blue-600/50 rounded transform transition duration-300 ease-in-out flex justify-center items-center hover:scale-110 bg-gradient-to-br ${item.bgClass}`}>
+              <span className={`text-2xl ${item.contentClass}`}>{item.content}</span>
+            </div>
           ))
         }
       </div>
