@@ -8,6 +8,10 @@ const useTimer = (initialSeconds = 0) => {
     setIsActive(true);
   }, []);
 
+  const pauseTimer = useCallback(() => {
+    setIsActive(false);
+  }, []);
+
   const refreshTimer = useCallback(() => {
     setTime(initialSeconds);
     setIsActive(false);
@@ -20,18 +24,17 @@ const useTimer = (initialSeconds = 0) => {
       interval = setInterval(() => {
         setTime((prevTime) => prevTime + 1);
       }, 1000);
-    } else if (!isActive && time !== initialSeconds) {
-      setTime(initialSeconds);
     }
 
+    // 清除 interval
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isActive, initialSeconds, time]);
+  }, [isActive]);
 
   const formattedTime = new Date(time * 1000).toISOString().substr(11, 8);
 
-  return { formattedTime, startTimer, refreshTimer };
+  return { formattedTime, startTimer, pauseTimer, refreshTimer };
 };
 
 export default useTimer;

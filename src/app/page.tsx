@@ -3,12 +3,28 @@ import { useState, useEffect } from "react"
 import useTimer from '@/hooks/useTime';
 import Box from '@/components/Box';
 
-const Home = () => {
-  const [box, setBox] = useState(9)
-  const [bomb, setBomb] = useState(9)
-  const { formattedTime, startTimer, refreshTimer } = useTimer();
-  const [resetKey, setResetKey] = useState(0);
+// 生成网格
+const generateGrid = (box: number, bomb: number) => {
+  // 初始化网格
+  let newGrid = Array(box * box).fill(0);
+  // 放置炸弹
+  for (let i = 0; i < bomb; i++) {
+    let bombPosition;
+    do {
+      bombPosition = Math.floor(Math.random() * box * box);
+    } while (newGrid[bombPosition] === 1);
+    newGrid[bombPosition] = 1;
+  }
+  return newGrid;
+};
 
+const Home = () => {
+  const { formattedTime, startTimer, refreshTimer, pauseTimer } = useTimer(); //倒计时
+  const [box, setBox] = useState<number>(9); // 网格大小
+  const [bomb, setBomb] = useState<number>(9); // 炸弹数量
+  const [grid, setGrid] = useState<Array<number>>([]); // 网格数组
+  const [gameOver, setGameOver] = useState<boolean>(false);// 游戏结束状态
+  const [gameWon, setGameWon] = useState<boolean>(false); // 游戏胜利状态
 
   // 取消浏览器右键
   useEffect(() => {
@@ -21,24 +37,36 @@ const Home = () => {
     };
   }, []);
 
-  // 重新开始
+  // 初始化或重置游戏
+  useEffect(() => {
+    handleRestart()
+  }, [box, bomb]);
+
+  // 处理重新开始
   const handleRestart = () => {
-    refreshTimer();
-    setResetKey(prevKey => prevKey + 1);
+    const newGrid = generateGrid(box, bomb);
+    setGrid(newGrid);
+    setGameOver(false);
+    setGameWon(false);
+    refreshTimer()
   };
+
+  // 游戏结束
+  const handleGameOver = () => {
+    setGameOver(true);
+    pauseTimer()
+  }
 
   return (
     <main className="wrap-container mx-auto h-screen select-none bg-gradient-to-r from-indigo-950 via-sky-950 to-emerald-950 text-neutral-100">
       <h1 className="text-lg text-red-500 text-center">be under construction~</h1>
-      <div className="p-10">
+      <div className="py-10 px-8">
         <div className="flex justify-between mb-10">
-          <div className="text-base cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600">💣 炸弹：0</div>
-          <div className="text-base cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600">🕛 用时：{formattedTime}</div>
+          <div className="text-sm cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600"><span className="text-base">💣 </span>炸弹：{bomb}</div>
+          <div className="text-sm cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600"><span className="text-base">🕛 </span>用时：{formattedTime}</div>
         </div>
-        <div className="grid grid-cols-9 gap-1 w-[255px] xs:w-[400px] m-auto">
-          {Array.from({ length: box * box }, (_, index) => (
-            <Box key={index} index={index} startTimer={startTimer} resetKey={resetKey} boxState={-1} />
-          ))}
+        <div onClick={startTimer}>
+          <Box items={grid} handleGameOver={handleGameOver} handleGameWon={setGameWon} />
         </div>
         <div className="mt-10 flex justify-center">
           <div className="text-lg cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600 hover:from-green-500 hover:to-green-700" onClick={handleRestart}>重新开始</div>
