@@ -22,13 +22,13 @@ const countBombsAround = (matrix: any[], row: number, col: number): number => {
   const cols = matrix[0].length
   let count = 0
   // 检查上方
-  if (row > 0 && matrix[row - 1][col].type === 1) count++
+  if (row > 0 && matrix[row - 1][col] === 1) count++
   // 检查下方
-  if (row < rows - 1 && matrix[row + 1][col].type === 1) count++
+  if (row < rows - 1 && matrix[row + 1][col] === 1) count++
   // 检查左方
-  if (col > 0 && matrix[row][col - 1].type === 1) count++
+  if (col > 0 && matrix[row][col - 1] === 1) count++
   // 检查右方
-  if (col < cols - 1 && matrix[row][col + 1].type === 1) count++
+  if (col < cols - 1 && matrix[row][col + 1] === 1) count++
   return count
 };
 
@@ -43,11 +43,13 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
   useEffect(() => {
     if (items.length) {
       let list: any[] = []
-      items.forEach(element => {
+      items.forEach((element, index) => {
         let item: boxArrProps[] = []
-        element.forEach(e => {
+        element.forEach((e, i) => {
+          let num = countBombsAround(items, index, i)
           item.push({
             type: e,
+            num: num,
             right: 0,
             left: 0,
             bgClass: 'from-blue-500 to-blue-500 hover:from-blue-500 hover:to-blue-500'
@@ -72,12 +74,7 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
       setGameOver(list)
       return
     } else {
-      let num = countBombsAround(list, pindex, index)
-      if (num) {
-        list[pindex][index].content = <span className="text-2xl text-blue-400">{num}</span>
-      } else {
-        list[pindex][index].content = null
-      }
+      list[pindex][index].content = item.num ? <span className="text-2xl text-blue-500 font-bold">{item.num}</span> : null
       list[pindex][index].bgClass = 'from-neutral-100 to-neutral-200 hover:from-neutral-300 hover:to-neutral-400'
     }
     setBoxArr(list)
