@@ -1,12 +1,19 @@
 'use client'
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 
-const Box = ({ index, startTimer, boxState = 0 }: { index: number; startTimer: () => void, boxState: number }) => {
+const Box = ({ index, startTimer, boxState, resetKey }: { index: number; startTimer: () => void; boxState: number; resetKey: number }) => {
   const [content, setContent] = useState<JSX.Element | null>(null);
   const [bgClass, setBgClass] = useState('bg-blue-500');
   const [clickCount, setClickCount] = useState(0);
   const [leftClicked, setLeftClicked] = useState(false);
+
+  useEffect(() => {
+    setContent(null);
+    setBgClass('bg-blue-500');
+    setClickCount(0);
+    setLeftClicked(false);
+  }, [resetKey]);
 
   const updateState = useCallback((newCount: number) => {
     switch (newCount) {
