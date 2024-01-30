@@ -22,7 +22,7 @@ const Home = () => {
 
   const handleRestart = () => {
     refreshTimer();
-    setResetKey(prevKey => prevKey + 1); // Increment resetKey
+    setResetKey(prevKey => prevKey + 1);
   };
 
   return (
@@ -31,8 +31,8 @@ const Home = () => {
         <h1 className="text-lg text-red-500 text-center">be under construction~</h1>
         <div className="p-10">
           <div className="flex justify-between mb-10">
-            <div className="text-lg">炸弹：0</div>
-            <div className="text-lg">用时：{formattedTime}</div>
+            <div className="text-base cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600">💣 炸弹：0</div>
+            <div className="text-base cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600">🕛 用时：{formattedTime}</div>
           </div>
           <div className="grid grid-cols-9 gap-1 w-[255px] xs:w-[400px] m-auto">
             {Array.from({ length: box * box }, (_, index) => (
