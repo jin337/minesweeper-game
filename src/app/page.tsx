@@ -1,11 +1,22 @@
 'use client'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import useTimer from '@/hooks/useTime';
 import Box from '@/components/Box';
 
 const Home = () => {
   const [box, setBox] = useState(9)
   const { formattedTime, startTimer, refreshTimer } = useTimer();
+
+  // 取消浏览器右键
+  useEffect(() => {
+    const handleContextMenu = (event: MouseEvent) => {
+      event.preventDefault();
+    };
+    window.addEventListener('contextmenu', handleContextMenu);
+    return () => {
+      window.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, []);
 
   return (
     <main className="wrap-container mx-auto h-screen select-none bg-gradient-to-r from-indigo-950 via-sky-950 to-emerald-950 text-neutral-100">
@@ -18,7 +29,7 @@ const Home = () => {
           </div>
           <div className="grid grid-cols-9 gap-1 w-[255px] xs:w-[400px] m-auto">
             {Array.from({ length: box * box }, (_, index) => (
-              <Box key={index} index={index} startTimer={startTimer} />
+              <Box key={index} index={index} startTimer={startTimer} boxState={-1} />
             ))}
           </div>
           <div className="mt-10 flex justify-center">

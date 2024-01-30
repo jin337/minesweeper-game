@@ -1,18 +1,46 @@
 'use client'
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
-const Box = ({ index, startTimer }: { index: number; startTimer: () => void }) => {
+
+const Box = ({ index, startTimer, boxState = 0 }: { index: number; startTimer: () => void, boxState: number }) => {
   const [content, setContent] = useState<JSX.Element | null>(null);
-  const [bgClass, setBgClass] = useState('from-blue-500 to-blue-500 hover:from-blue-500 hover:to-blue-500');
+  const [bgClass, setBgClass] = useState('bg-blue-500');
   const [clickCount, setClickCount] = useState(0);
   const [leftClicked, setLeftClicked] = useState(false);
+
+  const updateState = useCallback((newCount: number) => {
+    switch (newCount) {
+      case 1:
+        setContent(<span className="text-2xl">🚩</span>);
+        setBgClass('bg-yellow-500');
+        break;
+      case 2:
+        setContent(<span className="text-2xl">❓</span>);
+        setBgClass('bg-green-500');
+        break;
+      default:
+        setContent(null);
+        setBgClass('bg-blue-500');
+        break;
+    }
+  }, []);
 
   const handleLeftClick = () => {
     startTimer();
     setLeftClicked(true);
 
-    setContent(<span className="text-2xl text-blue-500">&#x31;</span>);
-    setBgClass('from-neutral-100 to-neutral-200 hover:from-neutral-300 hover:to-neutral-400');
+    if (boxState === -1) {
+      setContent(<span className="text-4xl animate-explode">💥</span>);
+      setBgClass('bg-red-100');
+      const timer = setTimeout(() => {
+        setContent(<span className="text-2xl">💣</span>);
+        setBgClass('bg-neutral-800');
+      }, 1000);
+    } else {
+      // 显示周围炸弹的数量
+      setContent(<span className="text-2xl text-blue-500">{boxState !== 0 && boxState}</span>);
+      setBgClass('bg-neutral-100');
+    }
   };
 
   const handleRightClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -20,20 +48,7 @@ const Box = ({ index, startTimer }: { index: number; startTimer: () => void }) =
     if (leftClicked) return;
     setClickCount(prevCount => {
       const newCount = (prevCount + 1) % 3;
-      switch (newCount) {
-        case 1:
-          setContent(<span className="text-2xl text-red-500">&#x2691;</span>);
-          setBgClass('from-yellow-100 to-yellow-200 hover:from-yellow-300 hover:to-yellow-400');
-          break;
-        case 2:
-          setContent(<span className="text-2xl text-yellow-500">&#x3f;</span>);
-          setBgClass('from-green-100 to-green-200 hover:from-green-300 hover:to-green-400');
-          break;
-        default:
-          setContent(null);
-          setBgClass('from-blue-500 to-blue-500 hover:from-blue-500 hover:to-blue-500');
-          break;
-      }
+      updateState(newCount);
       return newCount;
     });
   };
@@ -42,11 +57,11 @@ const Box = ({ index, startTimer }: { index: number; startTimer: () => void }) =
     <div
       onContextMenu={handleRightClick}
       onClick={handleLeftClick}
-      className={`size-6 xs:size-10 shadow-lg rounded transform transition duration-300 ease-in-out flex justify-center items-center hover:scale-110 bg-gradient-to-br ${bgClass}`}
+      className={`size-6 xs:size-10 rounded transform transition duration-300 ease-in-out flex justify-center items-center hover:scale-110 ${bgClass}`}
     >
       {content}
     </div>
   );
 };
 
-export default Box
+export default Box;
