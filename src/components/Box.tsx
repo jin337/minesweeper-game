@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactNode } from "react";
 
 interface BoxProps {
   items: number[][] //0-无炸弹，1有炸弹
@@ -13,7 +13,7 @@ interface boxArrProps {
   left?: number
   right?: number
   bgClass?: string
-  content?: JSX.Element | null
+  content?: ReactNode | null
 }
 
 // 判断当前炸弹数量
@@ -62,22 +62,50 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
     }
   }, [items])
 
+  // 处理空白
+  const handleSpace = (originalList: any[], oldList: any[], row: number, col: number): void => {
+    let list = JSON.parse(JSON.stringify(originalList)); // 创建列表的深拷贝
+    let old = JSON.parse(JSON.stringify(oldList)); // 创建列表的深拷贝
+    const rows = list.length;
+    const cols = list[0].length;
+    const spread = (r: number, c: number) => {
+      if (r < 0 || r >= rows || c < 0 || c >= cols || list[r][c].left === 1) {
+        return;
+      }
+      list[r][c].left = 1;
+      const bombsAround = countBombsAround(old, r, c);
+      list[r][c].content = bombsAround ? <span className="text-2xl text-blue-500 font-bold">{bombsAround}</span> : null;
+      list[r][c].bgClass = 'from-neutral-100 to-neutral-200 hover:from-neutral-300 hover:to-neutral-400';
+      if (bombsAround === 0) {
+        spread(r - 1, c); // 上
+        spread(r + 1, c); // 下
+        spread(r, c - 1); // 左
+        spread(r, c + 1); // 右
+      } else {
+        list[r][c].num = bombsAround;
+      }
+    };
+
+    spread(row, col);
+    setBoxArr(list);
+  };
+
   // 左键操作
   const handleLeftClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, item: boxArrProps, pindex: number, index: number) => {
     event.preventDefault();
     if (over) return  // 游戏已结束
     if (item.right != 0) return; // 右键键已经点击
     let list = [...boxArr]
-    list[pindex][index].left = 1
+
     if (item.type == 1) {
+      list[pindex][index].left = 1
       setOver(true)
+      setBoxArr(list)
       setGameOver(list)
       return
     } else {
-      list[pindex][index].content = item.num ? <span className="text-2xl text-blue-500 font-bold">{item.num}</span> : null
-      list[pindex][index].bgClass = 'from-neutral-100 to-neutral-200 hover:from-neutral-300 hover:to-neutral-400'
+      handleSpace(list, items, pindex, index)
     }
-    setBoxArr(list)
   }
 
   // 右键操作
@@ -110,7 +138,7 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
         if (e.type === 1) {
           return {
             ...e,
-            content: <span className="text-4xl animate-explode">💥</span>,
+            content: <span className="text-3xl animate-explode">💣</span>,
             bgClass: 'bg-red-100'
           };
         }
@@ -126,7 +154,7 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
           if (e.type === 1) {
             return {
               ...e,
-              content: <span className="text-2xl">💣</span>,
+              content: <span className="text-3xl">💥</span>,
               bgClass: 'bg-neutral-800'
             };
           }
@@ -149,7 +177,7 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
               key={index}
               onClick={(e) => handleLeftClick(e, item, rowIndex, index)}
               onContextMenu={(e) => handleRightClick(e, item, rowIndex, index)}
-              className={`size-8 xs:size-10 m-1 shadow shadow-blue-600/50 rounded transform transition duration-300 ease-in-out flex justify-center items-center hover:scale-110 bg-gradient-to-br ${item.bgClass}`}>{item.content}</div>
+              className={`size-8 xs:size-10 m-1 shadow shadow-blue-600/50 rounded transform transition duration-300 ease-in-out flex justify-center items-center hover:scale-110 bg-gradient-to-br ${item.bgClass}`}>{item?.content || null}</div>
           ))
         }
       </div>
