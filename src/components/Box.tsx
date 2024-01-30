@@ -16,6 +16,22 @@ interface boxArrProps {
   content?: JSX.Element | null
 }
 
+// 判断当前炸弹数量
+const countBombsAround = (matrix: any[], row: number, col: number): number => {
+  const rows = matrix.length
+  const cols = matrix[0].length
+  let count = 0
+  // 检查上方
+  if (row > 0 && matrix[row - 1][col].type === 1) count++
+  // 检查下方
+  if (row < rows - 1 && matrix[row + 1][col].type === 1) count++
+  // 检查左方
+  if (col > 0 && matrix[row][col - 1].type === 1) count++
+  // 检查右方
+  if (col < cols - 1 && matrix[row][col + 1].type === 1) count++
+  return count
+};
+
 const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
   const [boxArr, setBoxArr] = useState<Array<boxArrProps>>([])
   const [over, setOver] = useState<boolean>(false);
@@ -56,7 +72,12 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
       setGameOver(list)
       return
     } else {
-      list[pindex][index].content = null
+      let num = countBombsAround(list, pindex, index)
+      if (num) {
+        list[pindex][index].content = <span className="text-2xl text-blue-400">{num}</span>
+      } else {
+        list[pindex][index].content = null
+      }
       list[pindex][index].bgClass = 'from-neutral-100 to-neutral-200 hover:from-neutral-300 hover:to-neutral-400'
     }
     setBoxArr(list)

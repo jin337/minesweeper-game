@@ -26,7 +26,7 @@ const createMatrix = (size: number, bombs: number): number[][] => {
 const Home = () => {
   const { formattedTime, startTimer, refreshTimer, pauseTimer } = useTimer(); //倒计时
   const [box, setBox] = useState<number>(9); // 网格大小
-  const [bomb, setBomb] = useState<number>(20); // 炸弹数量
+  const [bomb, setBomb] = useState<number>(9); // 炸弹数量
   const [grid, setGrid] = useState<number[][]>([]); // 网格数组
   const [gameOver, setGameOver] = useState<boolean>(false);// 游戏结束状态
   const [gameWon, setGameWon] = useState<boolean>(false); // 游戏胜利状态
