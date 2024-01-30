@@ -4,25 +4,30 @@ import useTimer from '@/hooks/useTime';
 import Box from '@/components/Box';
 
 // 生成网格
-const generateGrid = (box: number, bomb: number) => {
-  // 初始化网格
-  let newGrid = Array(box * box).fill(0);
-  // 放置炸弹
-  for (let i = 0; i < bomb; i++) {
-    let bombPosition;
-    do {
-      bombPosition = Math.floor(Math.random() * box * box);
-    } while (newGrid[bombPosition] === 1);
-    newGrid[bombPosition] = 1;
+const createMatrix = (size: number, bombs: number): number[][] => {
+  // 创建初始的多维数组，全部填充为0
+  let matrix = Array.from({ length: size }, () => Array.from({ length: size }, () => 0));
+
+  // 随机放置炸弹
+  let placedBombs = 0;
+  while (placedBombs < bombs) {
+    let randomRow = Math.floor(Math.random() * size);
+    let randomCol = Math.floor(Math.random() * size);
+
+    if (matrix[randomRow][randomCol] === 0) {
+      matrix[randomRow][randomCol] = 1; // 放置炸弹
+      placedBombs++;
+    }
   }
-  return newGrid;
+
+  return matrix;
 };
 
 const Home = () => {
   const { formattedTime, startTimer, refreshTimer, pauseTimer } = useTimer(); //倒计时
   const [box, setBox] = useState<number>(9); // 网格大小
-  const [bomb, setBomb] = useState<number>(9); // 炸弹数量
-  const [grid, setGrid] = useState<Array<number>>([]); // 网格数组
+  const [bomb, setBomb] = useState<number>(20); // 炸弹数量
+  const [grid, setGrid] = useState<number[][]>([]); // 网格数组
   const [gameOver, setGameOver] = useState<boolean>(false);// 游戏结束状态
   const [gameWon, setGameWon] = useState<boolean>(false); // 游戏胜利状态
   const [gameType, setGameType] = useState<boolean>(false); // 游戏状态
@@ -45,7 +50,7 @@ const Home = () => {
 
   // 处理重新开始
   const handleRestart = () => {
-    const newGrid = generateGrid(box, bomb);
+    const newGrid = createMatrix(box, bomb);
     setGrid(newGrid);
     setGameOver(false);
     setGameWon(false);
