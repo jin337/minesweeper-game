@@ -40,6 +40,7 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
   const handleLeftClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, item: boxArrProps, index: number) => {
     event.preventDefault();
     if (over) return  // 游戏已结束
+    if (item.right != 0) return; // 右键键已经点击
     let list = [...boxArr]
     list[index].left = 1
     if (item.type == 1) {
