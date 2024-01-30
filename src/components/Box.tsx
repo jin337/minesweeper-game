@@ -30,7 +30,7 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
         type: element,
         right: 0,
         left: 0,
-        bgClass: 'bg-blue-500'
+        bgClass: 'from-blue-500 to-blue-500 hover:from-blue-500 hover:to-blue-500'
       })
     });
     setBoxArr(list)
@@ -48,7 +48,7 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
       return
     } else {
       list[index].content = null
-      list[index].bgClass = 'bg-neutral-100'
+      list[index].bgClass = 'from-neutral-100 to-neutral-200 hover:from-neutral-300 hover:to-neutral-400'
     }
     setBoxArr(list)
   }
@@ -63,15 +63,15 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
     if (count == 0) {
       list[index].right = 1
       list[index].content = <span className="text-2xl">🚩</span>
-      list[index].bgClass = 'bg-yellow-500'
+      list[index].bgClass = 'from-yellow-100 to-yellow-200 hover:from-yellow-300 hover:to-yellow-400'
     } else if (count == 1) {
       list[index].right = 2
       list[index].content = <span className="text-2xl">❓</span>
-      list[index].bgClass = 'bg-green-500'
+      list[index].bgClass = 'from-green-100 to-green-200 hover:from-green-300 hover:to-green-400'
     } else {
       list[index].right = 0
       list[index].content = null
-      list[index].bgClass = 'bg-blue-500'
+      list[index].bgClass = 'from-blue-500 to-blue-500 hover:from-blue-500 hover:to-blue-500'
     }
     setBoxArr(list)
   };
@@ -109,13 +109,13 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
   }
 
   return (
-    <div className="flex flex-wrap gap-1 w-[320px] xs:w-[392px] mx-auto">
+    <div className="flex flex-wrap gap-1.5 w-[336px] h-[336px] xs:w-[408px] xs:h-[408px] mx-auto">
       {
         boxArr.map((item, index) => (
           <div key={index}
             onClick={(e) => handleLeftClick(e, item, index)}
             onContextMenu={(e) => handleRightClick(e, item, index)}
-            className={`size-8 xs:size-10 rounded flex justify-center items-center ${item.bgClass}`}>{item.content}
+            className={`size-8 xs:size-10 shadow shadow-blue-600/50 rounded transform transition duration-300 ease-in-out flex justify-center items-center hover:scale-110 bg-gradient-to-br ${item.bgClass}`}>{item.content}
           </div>
         ))
       }
