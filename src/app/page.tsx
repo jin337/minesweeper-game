@@ -25,6 +25,7 @@ const Home = () => {
   const [grid, setGrid] = useState<Array<number>>([]); // 网格数组
   const [gameOver, setGameOver] = useState<boolean>(false);// 游戏结束状态
   const [gameWon, setGameWon] = useState<boolean>(false); // 游戏胜利状态
+  const [gameType, setGameType] = useState<boolean>(false); // 游戏状态
 
   // 取消浏览器右键
   useEffect(() => {
@@ -48,13 +49,20 @@ const Home = () => {
     setGrid(newGrid);
     setGameOver(false);
     setGameWon(false);
+    setGameType(false);
     refreshTimer()
   };
 
   // 游戏结束
   const handleGameOver = () => {
     setGameOver(true);
+    setGameType(true);
     pauseTimer()
+  }
+
+  // 游戏开始
+  const startGameType = () => {
+    !gameType && startTimer()
   }
 
   return (
@@ -65,8 +73,8 @@ const Home = () => {
           <div className="text-sm cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600"><span className="text-base">💣 </span>炸弹：{bomb}</div>
           <div className="text-sm cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600"><span className="text-base">🕛 </span>用时：{formattedTime}</div>
         </div>
-        <div onClick={startTimer}>
-          <Box items={grid} handleGameOver={handleGameOver} handleGameWon={setGameWon} />
+        <div onClick={startGameType}>
+          <Box items={grid} gameType={gameType} handleGameOver={handleGameOver} handleGameWon={setGameWon} />
         </div>
         <div className="mt-10 flex justify-center">
           <div className="text-lg cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600 hover:from-green-500 hover:to-green-700" onClick={handleRestart}>重新开始</div>

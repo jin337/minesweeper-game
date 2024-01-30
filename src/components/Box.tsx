@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 interface BoxProps {
   items: number[] //0-无炸弹，1有炸弹
+  gameType: boolean
   handleGameOver: (gameOver: boolean) => void
   handleGameWon: (gameWon: boolean) => void
 }
@@ -14,9 +15,13 @@ interface boxArrProps {
   content?: JSX.Element | null
 }
 
-const Box = ({ items, boxType, handleGameOver, handleGameWon }: BoxProps) => {
+const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
   const [boxArr, setBoxArr] = useState<Array<boxArrProps>>([])
-  const [over, setOver] = useState<boolean>(boxType);
+  const [over, setOver] = useState<boolean>(false);
+
+  useEffect(() => {
+    setOver(gameType)
+  }, [gameType])
 
   useEffect(() => {
     let list: boxArrProps[] = []
@@ -38,6 +43,7 @@ const Box = ({ items, boxType, handleGameOver, handleGameWon }: BoxProps) => {
     let list = [...boxArr]
     list[index].left = 1
     if (item.type == 1) {
+      setOver(true)
       setGameOver(list)
       return
     } else {
@@ -72,22 +78,34 @@ const Box = ({ items, boxType, handleGameOver, handleGameWon }: BoxProps) => {
 
   // 游戏结束
   const setGameOver = (list: Array<boxArrProps>) => {
-    list.forEach(element => {
-      if (element.type == 1) {
-        // 第一次赋值
-        element.content = <span className="text-4xl animate-explode">💥</span>;
-        element.bgClass = 'bg-red-100';
-        setBoxArr([...list]);
-
-        // 延迟1秒后进行第二次赋值
-        setTimeout(() => {
-          element.content = <span className="text-2xl">💣</span>;
-          element.bgClass = 'bg-neutral-800';
-          setBoxArr([...list]);
-          handleGameOver(true)
-        }, 1000);
+    const updatedList = list.map((element, index) => {
+      if (element.type === 1) {
+        return {
+          ...element,
+          content: <span className="text-4xl animate-explode">💥</span>,
+          bgClass: 'bg-red-100'
+        };
       }
+      return element;
     });
+
+    setBoxArr(updatedList);
+
+    setTimeout(() => {
+      const newList = updatedList.map((element) => {
+        if (element.type === 1) {
+          return {
+            ...element,
+            content: <span className="text-2xl">💣</span>,
+            bgClass: 'bg-neutral-800'
+          };
+        }
+        return element;
+      });
+
+      setBoxArr(newList);
+      handleGameOver(true);
+    }, 1000);
   }
 
   return (
