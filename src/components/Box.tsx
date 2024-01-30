@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 
 interface BoxProps {
   items: number[] //0-无炸弹，1有炸弹
-  boxType: boolean
   handleGameOver: (gameOver: boolean) => void
   handleGameWon: (gameWon: boolean) => void
 }
