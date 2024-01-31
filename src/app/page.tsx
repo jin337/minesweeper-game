@@ -60,15 +60,15 @@ const Home = () => {
 
   // 游戏结束
   const handleGameOver = () => {
-    setGameOver(true);
-    setGameType(true);
     pauseTimer()
+    setGameType(true);
+    setGameOver(true);
   }
   // 游戏胜利
   const handleGameWon = () => {
-    setGameWon(true);
-    setGameType(true);
     pauseTimer()
+    setGameType(true);
+    setGameWon(true);
   }
 
   // 游戏开始
@@ -84,12 +84,12 @@ const Home = () => {
       </div>
       <div className="relative my-10 animate-fadeIn h-[360px] xs:h-[432px]" onClick={startGameType}>
         <Box items={grid} gameType={gameType} handleGameOver={handleGameOver} handleGameWon={handleGameWon} />
-        {/* <div className="absolute top-0 w-full h-full">
-          <div className="flex">
-            <span>🥳</span>
-            <span>😭</span>
+        {(gameOver || gameWon) && <div className="absolute top-0 w-full h-full">
+          <div className="flex w-full h-full justify-center items-center">
+            {gameWon && <span className="text-9xl animate-fadeIn">🥳</span>}
+            {gameOver && <span className="text-9xl animate-fadeIn">😭</span>}
           </div>
-        </div> */}
+        </div>}
       </div>
       <div className="flex justify-center">
         <div className="text-lg cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600 hover:from-green-500 hover:to-green-700" onClick={handleRestart}>重新开始</div>

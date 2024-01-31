@@ -212,6 +212,7 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
       return true;
     }
     if (isOver(arr)) {
+      setOver(true)
       handleGameWon(true)
     }
   }
