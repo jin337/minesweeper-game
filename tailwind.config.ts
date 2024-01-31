@@ -25,10 +25,16 @@ const config: Config = {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
+        fadeOver: {
+          '0%': { transform: 'scale(1)', opacity: '0' },
+          '50%': { transform: 'scale(1.4)', opacity: '.5' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
       },
       animation: {
         explode: 'explode 1s ease-out',
         fadeIn: 'fadeIn 1.5s ease-in-out',
+        fadeOver: 'fadeOver 1.5s ease-in-out',
       },
     },
   },
