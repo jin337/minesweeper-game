@@ -11,7 +11,7 @@ interface boxArrProps {
   [x: string]: any;
   type: number  // 炸弹：0-无，1-有
   left?: number // 左键：0-未点击，1-已点击
-  right?: number // 右键：0-未点击，1-已点击
+  right?: number // 右键：0-无，1-标记地雷， 2-不确定
   bgClass?: string // 单元格背景class
   contentClass?: string // 内容class
   content?: string | number // 单元格内容
@@ -66,7 +66,7 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
   }, [gameType])
 
   // 处理空白
-  const handleSpace = (arr: any[], oldList: any[], row: number, col: number): void => {
+  const handleSpace = (arr: Array<boxArrProps[][]>, row: number, col: number): void => {
     let list = JSON.parse(JSON.stringify(arr));
     const rows = list.length;
     const cols = list[0].length;
@@ -88,9 +88,11 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
         spread(r, c + 1); // 右
       }
     };
-
     spread(row, col);
     setBoxArr(list);
+
+    // 判断游戏是否胜利
+    setGameWon(list)
   };
 
   // 左键操作
@@ -100,14 +102,16 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
     if (item.right != 0) return; // 右键键已经点击
     let list = [...boxArr]
 
-    if (item.type == 1) {
+    if (item.type == 1) { // 点击了炸弹
       list[pindex][index].left = 1
-      setOver(true)
+      // 更新数据状态
       setBoxArr(list)
+      // 游戏结束
       setGameOver(list)
       return
     } else {
-      handleSpace(list, items, pindex, index)
+      // 处理邻近单元格
+      handleSpace(list, pindex, index)
     }
   }
 
@@ -118,11 +122,13 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
     if (item.left != 0) return; // 左键已经点击
     let list = [...boxArr]
     let count = item.right
-    if (count == 0) {
+    if (count == 0) { // 标记：地雷
       list[pindex][index].right = 1
       list[pindex][index].content = '🚩'
       list[pindex][index].bgClass = 'from-yellow-100 to-yellow-200 hover:from-yellow-300 hover:to-yellow-400'
-    } else if (count == 1) {
+      // 判断游戏是否胜利
+      setGameWon(list)
+    } else if (count == 1) { // 标记：不确定
       list[pindex][index].right = 2
       list[pindex][index].content = "❓"
       list[pindex][index].bgClass = 'from-green-100 to-green-200 hover:from-green-300 hover:to-green-400'
@@ -135,7 +141,10 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
   };
 
   // 游戏结束
-  const setGameOver = (arr: Array<boxArrProps>) => {
+  const setGameOver = (arr: any[]) => {
+    // 游戏结束
+    setOver(true)
+
     const updatedList = arr.map((element) => {
       let item = element.map((e: boxArrProps) => {
         if (e.type === 1) {
@@ -169,8 +178,28 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
       });
 
       setBoxArr(newList);
-      handleGameOver(true);
+      handleGameOver(true); // 游戏结束
     }, 1000);
+  }
+
+  // 游戏胜利
+  const setGameWon = (arr: any[]) => {
+    let isOver = (list: any[]) => {
+      // 遍历每个单元格
+      for (let row of list) {
+        for (let cell of row) {
+          // 如果有一个不是炸弹且还没有被揭露的单元格，游戏还没有赢
+          if (cell.type === 0 && cell.left !== 1) {
+            return false;
+          }
+        }
+      }
+      // 所有非炸弹单元格都被揭露，既是赢了游戏
+      return true;
+    }
+    if (isOver(arr)) {
+      handleGameWon(true)
+    }
   }
 
   return (

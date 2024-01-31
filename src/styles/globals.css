@@ -1,9 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.wrap-container {
-  @apply container max-w-[1100px];
-}
 /* 滚动条 */
 ::-webkit-scrollbar-track {
   border-radius: 10px;
