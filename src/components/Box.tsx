@@ -2,34 +2,34 @@
 import { useState, useEffect } from "react";
 
 interface BoxProps {
-  items: number[][] //0-无炸弹，1有炸弹
-  gameType: boolean
-  handleGameOver: (gameOver: boolean) => void
-  handleGameWon: (gameWon: boolean) => void
+  items: number[][] // 单元格数组
+  gameType: boolean // 游戏状态
+  handleGameOver: (gameOver: boolean) => void // 游戏结束
+  handleGameWon: (gameWon: boolean) => void // 游戏胜利
 }
 interface boxArrProps {
   [x: string]: any;
-  type: number
-  left?: number
-  right?: number
-  bgClass?: string
-  contentClass?: string
-  content?: string | number
+  type: number  // 炸弹：0-无，1-有
+  left?: number // 左键：0-未点击，1-已点击
+  right?: number // 右键：0-未点击，1-已点击
+  bgClass?: string // 单元格背景class
+  contentClass?: string // 内容class
+  content?: string | number // 单元格内容
 }
 
 // 判断当前炸弹数量
-const countBombsAround = (matrix: any[], row: number, col: number): number => {
-  const rows = matrix.length
-  const cols = matrix[0].length
+const countBombsAround = (arr: any[], row: number, col: number): number => {
+  const rows = arr.length
+  const cols = arr[0].length
   let count = 0
   // 检查上方
-  if (row > 0 && matrix[row - 1][col] === 1) count++
+  if (row > 0 && arr[row - 1][col] === 1) count++
   // 检查下方
-  if (row < rows - 1 && matrix[row + 1][col] === 1) count++
+  if (row < rows - 1 && arr[row + 1][col] === 1) count++
   // 检查左方
-  if (col > 0 && matrix[row][col - 1] === 1) count++
+  if (col > 0 && arr[row][col - 1] === 1) count++
   // 检查右方
-  if (col < cols - 1 && matrix[row][col + 1] === 1) count++
+  if (col < cols - 1 && arr[row][col + 1] === 1) count++
   return count
 };
 
@@ -37,10 +37,7 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
   const [boxArr, setBoxArr] = useState<Array<boxArrProps>>([])
   const [over, setOver] = useState<boolean>(false);
 
-  useEffect(() => {
-    setOver(gameType)
-  }, [gameType])
-
+  // 初始化数据
   useEffect(() => {
     if (items.length) {
       let list: any[] = []
@@ -63,28 +60,32 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
     }
   }, [items])
 
+  // 判断游戏状态
+  useEffect(() => {
+    setOver(gameType)
+  }, [gameType])
+
   // 处理空白
-  const handleSpace = (originalList: any[], oldList: any[], row: number, col: number): void => {
-    let list = JSON.parse(JSON.stringify(originalList)); // 创建列表的深拷贝
-    let old = JSON.parse(JSON.stringify(oldList)); // 创建列表的深拷贝
+  const handleSpace = (arr: any[], oldList: any[], row: number, col: number): void => {
+    let list = JSON.parse(JSON.stringify(arr));
     const rows = list.length;
     const cols = list[0].length;
     const spread = (r: number, c: number) => {
       if (r < 0 || r >= rows || c < 0 || c >= cols || list[r][c].left === 1) {
         return;
       }
+      const bomb = list[r][c].num
+      list[r][c].content = bomb ? bomb : null;
+
       list[r][c].left = 1;
-      const bombsAround = countBombsAround(old, r, c);
       list[r][c].bgClass = 'from-neutral-100 to-neutral-200 hover:from-neutral-300 hover:to-neutral-400';
       list[r][c].contentClass = 'text-2xl text-blue-500 font-bold';
-      list[r][c].content = bombsAround ? bombsAround : null;
-      if (bombsAround === 0) {
+
+      if (bomb === 0) {
         spread(r - 1, c); // 上
         spread(r + 1, c); // 下
         spread(r, c - 1); // 左
         spread(r, c + 1); // 右
-      } else {
-        list[r][c].num = bombsAround;
       }
     };
 
@@ -134,8 +135,8 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
   };
 
   // 游戏结束
-  const setGameOver = (list: Array<boxArrProps>) => {
-    const updatedList = list.map((element) => {
+  const setGameOver = (arr: Array<boxArrProps>) => {
+    const updatedList = arr.map((element) => {
       let item = element.map((e: boxArrProps) => {
         if (e.type === 1) {
           return {
