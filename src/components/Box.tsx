@@ -80,7 +80,7 @@ const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
   }, [gameType])
 
   // 处理空白
-  const handleSpace = (arr: Array<boxArrProps[][]>, row: number, col: number): void => {
+  const handleSpace = (arr: any[], row: number, col: number): void => {
     let list = JSON.parse(JSON.stringify(arr));
     const rows = list.length;
     const cols = list[0].length;

@@ -82,8 +82,14 @@ const Home = () => {
         <div className="text-sm cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600"><span className="text-base">💣 </span>炸弹：{bomb}</div>
         <div className="text-sm cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600"><span className="text-base">🕛 </span>用时：{formattedTime}</div>
       </div>
-      <div className="my-10 animate-fadeIn h-[360px] xs:h-[432px]" onClick={startGameType}>
+      <div className="relative my-10 animate-fadeIn h-[360px] xs:h-[432px]" onClick={startGameType}>
         <Box items={grid} gameType={gameType} handleGameOver={handleGameOver} handleGameWon={handleGameWon} />
+        {/* <div className="absolute top-0 w-full h-full">
+          <div className="flex">
+            <span>🥳</span>
+            <span>😭</span>
+          </div>
+        </div> */}
       </div>
       <div className="flex justify-center">
         <div className="text-lg cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600 hover:from-green-500 hover:to-green-700" onClick={handleRestart}>重新开始</div>
