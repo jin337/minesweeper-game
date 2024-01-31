@@ -79,8 +79,8 @@ const Home = () => {
   return (
     <main className="container py-10 mx-auto h-screen select-none bg-gradient-to-r from-indigo-950 via-sky-950 to-emerald-950 text-neutral-100">
       <div className="flex justify-around">
-        <div className="text-sm cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600"><span className="text-base">💣 </span>炸弹：{bomb}</div>
-        <div className="text-sm cursor-pointer rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600"><span className="text-base">🕛 </span>用时：{formattedTime}</div>
+        <div className="text-sm rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600"><span className="text-base">💣 </span>炸弹：{bomb}</div>
+        <div className="text-sm rounded px-2 py-1 bg-gradient-to-br from-green-400 to-green-600"><span className="text-base">🕛 </span>用时：{formattedTime}</div>
       </div>
       <div className="relative my-10 animate-fadeIn h-[360px] xs:h-[432px]" onClick={startGameType}>
         <Box items={grid} gameType={gameType} handleGameOver={handleGameOver} handleGameWon={handleGameWon} />
