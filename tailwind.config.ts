@@ -21,9 +21,14 @@ const config: Config = {
           '30%': { transform: 'scale(1.4)', opacity: '1' },
           '100%': { transform: 'scale(0)', opacity: '0' },
         },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
       },
       animation: {
         explode: 'explode 1s ease-out',
+        fadeIn: 'fadeIn 1.5s ease-in-out',
       },
     },
   },

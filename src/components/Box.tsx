@@ -19,19 +19,33 @@ interface boxArrProps {
 
 // 判断当前炸弹数量
 const countBombsAround = (arr: any[], row: number, col: number): number => {
-  const rows = arr.length
-  const cols = arr[0].length
-  let count = 0
-  // 检查上方
-  if (row > 0 && arr[row - 1][col] === 1) count++
-  // 检查下方
-  if (row < rows - 1 && arr[row + 1][col] === 1) count++
-  // 检查左方
-  if (col > 0 && arr[row][col - 1] === 1) count++
-  // 检查右方
-  if (col < cols - 1 && arr[row][col + 1] === 1) count++
-  return count
+  const rows = arr.length;
+  const cols = arr[0].length;
+  let count = 0;
+
+  // 定义周围8个方向的偏移量
+  const directions = [
+    [-1, -1], [-1, 0], [-1, 1], // 上一行的三个
+    [0, -1], [0, 1],   // 当前行的左右
+    [1, -1], [1, 0], [1, 1]      // 下一行的三个
+  ];
+
+  for (let [dx, dy] of directions) {
+    const newRow = row + dx;
+    const newCol = col + dy;
+
+    // 检查新位置是否在数组范围内
+    if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+      // 检查新位置是否有炸弹
+      if (arr[newRow][newCol] === 1) {
+        count++;
+      }
+    }
+  }
+
+  return count;
 };
+
 
 const Box = ({ items, gameType, handleGameOver, handleGameWon }: BoxProps) => {
   const [boxArr, setBoxArr] = useState<Array<boxArrProps>>([])
