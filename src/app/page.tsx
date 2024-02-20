@@ -84,7 +84,7 @@ const Home = () => {
       </div>
       <div className="relative my-10 animate-fadeIn h-[360px] xs:h-[432px]" onClick={startGameType}>
         <Box items={grid} gameType={gameType} handleGameOver={handleGameOver} handleGameWon={handleGameWon} />
-        {(gameOver || gameWon) && <div className="absolute top-0 w-full h-full">
+        {(gameOver || gameWon) && <div className="absolute top-0 w-full h-full overflow-hidden">
           <div className="flex w-full h-full justify-center items-center bg-neutral-300/10 animate-fadeOver">
             {gameWon && <span className="text-9xl">🥳</span>}
             {gameOver && <span className="text-9xl">😭</span>}
